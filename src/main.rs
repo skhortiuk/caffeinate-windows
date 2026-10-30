@@ -24,9 +24,9 @@ use windows_sys::Win32::System::Threading::{
     OpenProcess, WaitForSingleObject, INFINITE, PROCESS_SYNCHRONIZE,
 };
 
+mod update;
+
 const VERSION: &str = env!("CARGO_PKG_VERSION");
-const INSTALL_URL: &str =
-    "https://raw.githubusercontent.com/skhortiuk/caffeinate-windows/main/install.ps1";
 
 const USAGE: &str = "\
 usage: caffeinate [-dimsu] [-t timeout] [-w pid] [utility arguments...]
@@ -267,27 +267,6 @@ fn run_command(argv: &[String], timeout: Option<u64>) -> i32 {
     }
 }
 
-/// Re-run the published installer. It verifies the SHA256 and replaces the
-/// running exe safely, so delegating to it keeps one source of truth.
-fn self_update() -> i32 {
-    let status = Command::new("powershell")
-        .args([
-            "-NoProfile",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-Command",
-            &format!("irm {INSTALL_URL} | iex"),
-        ])
-        .status();
-    match status {
-        Ok(s) => s.code().unwrap_or(1),
-        Err(e) => {
-            eprintln!("caffeinate: cannot start powershell: {e}");
-            1
-        }
-    }
-}
-
 fn main() {
     let opts = match parse_args(env::args().skip(1)) {
         Ok(o) => o,
@@ -295,7 +274,7 @@ fn main() {
             println!("{e}");
             return;
         }
-        Err(ParseError::Update) => process::exit(self_update()),
+        Err(ParseError::Update) => process::exit(update::run()),
         Err(e) => {
             eprintln!("{e}");
             eprintln!("{USAGE}");

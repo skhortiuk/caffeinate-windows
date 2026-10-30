@@ -1,6 +1,6 @@
 [package]
 name = "caffeinate-windows"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.80"
 description = "The macOS caffeinate command for Windows: keep the system or display awake"
@@ -22,6 +22,8 @@ features = [
     "Win32_Foundation",
     "Win32_System_Power",
     "Win32_System_Threading",
+    "Win32_Networking_WinHttp",
+    "Win32_Security_Cryptography",
 ]
 
 [package.metadata.docs.rs]

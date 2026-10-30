@@ -39,7 +39,8 @@ may trigger a SmartScreen warning.
 
 **Update:** `caffeinate --update`, or re-run the install line. Either one
 is a no-op when you already have the latest release. `caffeinate -V` shows
-the installed version.
+the installed version. If you still have 0.1.0, re-run the install line once:
+its `--update` went through PowerShell and Defender blocks that.
 
 **Uninstall:**
 
