@@ -13,12 +13,23 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
-      - run: cargo test
-      - run: cargo build --release
+        with:
+          toolchain: stable
+      - run: cargo test --locked
+      - run: cargo build --release --locked
+      - name: Write SHA256
+        shell: pwsh
+        run: |
+          $h = (Get-FileHash target/release/caffeinate.exe -Algorithm SHA256).Hash.ToLower()
+          "$h  caffeinate.exe" | Out-File -Encoding ascii -NoNewline target/release/caffeinate.exe.sha256
+          Get-Content target/release/caffeinate.exe.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: caffeinate
-          path: target/release/caffeinate.exe
+          path: |
+            target/release/caffeinate.exe
+            target/release/caffeinate.exe.sha256
+          if-no-files-found: error
 
   release:
     needs: build
@@ -31,5 +42,8 @@ jobs:
           name: caffeinate
       - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
-          files: caffeinate.exe
+          files: |
+            caffeinate.exe
+            caffeinate.exe.sha256
+          fail_on_unmatched_files: true
           generate_release_notes: true
