@@ -26,7 +26,7 @@ use windows_sys::Win32::System::Threading::{
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 const INSTALL_URL: &str =
-    "https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1";
+    "https://raw.githubusercontent.com/skhortiuk/caffeinate-windows/main/install.ps1";
 
 const USAGE: &str = "\
 usage: caffeinate [-dimsu] [-t timeout] [-w pid] [utility arguments...]

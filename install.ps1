@@ -2,7 +2,7 @@
 # Installs the latest caffeinate.exe release into %LOCALAPPDATA%\Programs\caffeinate
 # and adds that folder to the user PATH. No admin rights, no other tools needed.
 #
-#   irm https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/skhortiuk/caffeinate-windows/main/install.ps1 | iex
 #
 # Wrapped in a script block so nothing leaks into the calling shell when run via iex.
 & {
@@ -13,7 +13,7 @@
         throw "caffeinate.exe is 64-bit only; this is a 32-bit Windows."
     }
 
-    $repo = "OWNER/caffeinate-windows"
+    $repo = "skhortiuk/caffeinate-windows"
     $dir = Join-Path $env:LOCALAPPDATA "Programs\caffeinate"
     $exe = Join-Path $dir "caffeinate.exe"
     $tmp = "$exe.tmp"

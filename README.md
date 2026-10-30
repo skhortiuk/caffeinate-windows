@@ -1,7 +1,7 @@
 # caffeinate-windows
 
-[![CI](https://github.com/OWNER/caffeinate-windows/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/caffeinate-windows/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/OWNER/caffeinate-windows)](https://github.com/OWNER/caffeinate-windows/releases/latest)
+[![CI](https://github.com/skhortiuk/caffeinate-windows/actions/workflows/ci.yml/badge.svg)](https://github.com/skhortiuk/caffeinate-windows/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/skhortiuk/caffeinate-windows)](https://github.com/skhortiuk/caffeinate-windows/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 The macOS `caffeinate` command, for Windows. Keeps your PC or display awake
@@ -21,7 +21,7 @@ hold is released the moment caffeinate exits.
 Paste into PowerShell. Nothing else needed.
 
 ```powershell
-irm https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/skhortiuk/caffeinate-windows/main/install.ps1 | iex
 ```
 
 This downloads `caffeinate.exe` from the latest release, verifies its SHA256,
@@ -30,10 +30,10 @@ PATH. It works in that window right away; other open terminals need a restart.
 
 Piping a script from the internet into your shell deserves a look first.
 It is short: [install.ps1](install.ps1), or print it with
-`irm https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1`.
+`irm https://raw.githubusercontent.com/skhortiuk/caffeinate-windows/main/install.ps1`.
 
 **Manual:** download `caffeinate.exe` from
-[Releases](https://github.com/OWNER/caffeinate-windows/releases/latest) and put
+[Releases](https://github.com/skhortiuk/caffeinate-windows/releases/latest) and put
 it anywhere on your PATH. The binary is not code-signed, so a browser download
 may trigger a SmartScreen warning.
 
@@ -119,7 +119,7 @@ SYSTEM:
 Needs Rust from [rustup.rs](https://rustup.rs).
 
 ```
-cargo install --locked --git https://github.com/OWNER/caffeinate-windows
+cargo install --locked --git https://github.com/skhortiuk/caffeinate-windows
 ```
 
 ## Contributing
