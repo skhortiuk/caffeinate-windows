@@ -1,19 +1,28 @@
 # caffeinate-windows
 
-A port of the macOS `caffeinate` command. Keeps Windows from sleeping or
-turning off the display for as long as the process runs, a timeout, another
-process's lifetime, or a wrapped command.
+The macOS `caffeinate` command, for Windows. Keeps the system or display
+awake while a command runs, for a timeout, until a process exits, or until
+you press Ctrl+C.
 
-Built on `SetThreadExecutionState`; no services, no registry, no power-plan
-changes. Assertions vanish the instant the process exits.
+No service, no registry edits, no power-plan changes. Uses the Win32
+`SetThreadExecutionState` API; the hold is released the moment the process
+exits.
 
-## Build
+## Install
+
+No Rust required (downloads the latest release and adds it to your PATH):
+
+```powershell
+irm https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1 | iex
+```
+
+With Rust:
 
 ```
-git clone https://github.com/OWNER/caffeinate-windows
-cd caffeinate-windows
-cargo install --path .
+cargo install --git https://github.com/OWNER/caffeinate-windows
 ```
+
+Or grab `caffeinate.exe` from [Releases](https://github.com/OWNER/caffeinate-windows/releases).
 
 ## Usage
 
@@ -24,23 +33,21 @@ caffeinate [-dimsu] [-t timeout] [-w pid] [utility arguments...]
 | Flag | Effect |
 |------|--------|
 | `-d` | keep the display on |
-| `-i` | keep the system from idle sleep (default when no flag given) |
+| `-i` | keep the system awake (default when no flag is given) |
 | `-m` | same as `-i` (Windows has no disk-idle assertion) |
 | `-s` | same as `-i` |
-| `-u` | wake the display now; hold for `-t` seconds (default 5) |
+| `-u` | wake the display now and hold for `-t` seconds (default 5) |
 | `-t N` | release after N seconds |
 | `-w PID` | release when process PID exits |
 
-Examples:
-
 ```
-caffeinate                      # system awake until Ctrl+C
+caffeinate                      # awake until Ctrl+C
 caffeinate -d -t 3600           # display and system awake for one hour
 caffeinate -w 4242              # until PID 4242 exits
-caffeinate -i cargo build       # during a build; returns cargo's exit code
+caffeinate -di cargo build      # during a build; returns cargo's exit code
 ```
 
-Check what is held while it runs:
+Confirm the hold from an elevated shell:
 
 ```
 powercfg /requests
@@ -48,5 +55,9 @@ powercfg /requests
 
 ## Notes
 
-- Does not override a lid-close action or a manual sleep request.
-- `-d` alone keeps only the display awake; use `-di` for display and system.
+- Does not override a lid-close action or a manual sleep.
+- `-d` alone keeps only the display awake. Use `-di` for both.
+
+## License
+
+MIT
