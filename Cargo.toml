@@ -1,9 +1,14 @@
 [package]
-name = "caffeinate"
+name = "caffeinate-windows"
 version = "0.1.0"
 edition = "2021"
 description = "macOS caffeinate for Windows: keep the system or display awake"
 license = "MIT"
+repository = "https://github.com/OWNER/caffeinate-windows"
+
+[[bin]]
+name = "caffeinate"
+path = "src/main.rs"
 
 [dependencies.windows-sys]
 version = "0.59"

@@ -1,4 +1,4 @@
-# caffeinate (Windows)
+# caffeinate-windows
 
 A port of the macOS `caffeinate` command. Keeps Windows from sleeping or
 turning off the display for as long as the process runs, a timeout, another
@@ -10,8 +10,9 @@ changes. Assertions vanish the instant the process exits.
 ## Build
 
 ```
-cargo build --release
-copy target\release\caffeinate.exe %USERPROFILE%\bin\
+git clone https://github.com/OWNER/caffeinate-windows
+cd caffeinate-windows
+cargo install --path .
 ```
 
 ## Usage
