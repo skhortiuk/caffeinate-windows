@@ -10,19 +10,19 @@ exits.
 
 ## Install
 
-No Rust required (downloads the latest release and adds it to your PATH):
+Paste into PowerShell. Nothing else needed.
 
 ```powershell
 irm https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1 | iex
 ```
 
-With Rust:
+Downloads `caffeinate.exe` from the latest release into
+`%LOCALAPPDATA%\Programs\caffeinate` and adds it to your PATH. Open a new
+terminal and run `caffeinate`.
 
-```
-cargo install --git https://github.com/OWNER/caffeinate-windows
-```
+Manual: grab `caffeinate.exe` from [Releases](https://github.com/OWNER/caffeinate-windows/releases) and put it anywhere on your PATH.
 
-Or grab `caffeinate.exe` from [Releases](https://github.com/OWNER/caffeinate-windows/releases).
+Uninstall: delete that folder and remove it from PATH.
 
 ## Usage
 
@@ -57,6 +57,12 @@ powercfg /requests
 
 - Does not override a lid-close action or a manual sleep.
 - `-d` alone keeps only the display awake. Use `-di` for both.
+
+## From source
+
+```
+cargo install --git https://github.com/OWNER/caffeinate-windows
+```
 
 ## License
 
