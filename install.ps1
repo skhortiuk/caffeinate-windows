@@ -25,6 +25,24 @@
 
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
 
+    # Resolve the latest tag from the redirect, so an up-to-date install is a no-op.
+    $latest = $null
+    try {
+        $resp = [Net.WebRequest]::Create("https://github.com/$repo/releases/latest")
+        $resp.Method = "HEAD"
+        $resp.AllowAutoRedirect = $false
+        $loc = $resp.GetResponse().Headers["Location"]
+        if ($loc -match '/tag/v?([^/]+)$') { $latest = $Matches[1] }
+    } catch { }
+    if ($latest -and (Test-Path $exe)) {
+        $current = (& $exe --version 2>$null) -replace '^caffeinate\s+', ''
+        if ($current -eq $latest) {
+            Write-Host "caffeinate $current is already the latest version ($exe)"
+            return
+        }
+        Write-Host "Updating caffeinate $current -> $latest"
+    }
+
     Write-Host "Downloading $base/caffeinate.exe"
     try {
         Invoke-WebRequest -Uri "$base/caffeinate.exe" -OutFile $tmp -UseBasicParsing

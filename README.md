@@ -37,6 +37,10 @@ It is short: [install.ps1](install.ps1), or print it with
 it anywhere on your PATH. The binary is not code-signed, so a browser download
 may trigger a SmartScreen warning.
 
+**Update:** `caffeinate --update`, or re-run the install line. Either one
+is a no-op when you already have the latest release. `caffeinate -V` shows
+the installed version.
+
 **Uninstall:**
 
 ```powershell
@@ -64,6 +68,7 @@ caffeinate [-dimsu] [-t timeout] [-w pid] [utility arguments...]
 | `-t N` | release after N seconds, even if a utility or watched process is still running |
 | `-w PID` | release when process PID exits |
 | `-V` | print the version |
+| `--update` | install the latest release |
 
 ```
 caffeinate                      # system awake until Ctrl+C

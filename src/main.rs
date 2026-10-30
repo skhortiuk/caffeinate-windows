@@ -25,6 +25,8 @@ use windows_sys::Win32::System::Threading::{
 };
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
+const INSTALL_URL: &str =
+    "https://raw.githubusercontent.com/OWNER/caffeinate-windows/main/install.ps1";
 
 const USAGE: &str = "\
 usage: caffeinate [-dimsu] [-t timeout] [-w pid] [utility arguments...]
@@ -44,6 +46,7 @@ Prevent the system from sleeping while the command runs.
   -h, --help  show this help
   -V, --version
               show the version
+  --update    download and install the latest release
 
 With no flags, -i is assumed. If a utility is given, it is run with the
 remaining arguments and the assertion is held until it exits; caffeinate
@@ -64,6 +67,7 @@ struct Options {
 enum ParseError {
     Help,
     Version,
+    Update,
     UnknownFlag(String),
     MissingValue(char),
     BadValue(char, String),
@@ -75,6 +79,7 @@ impl fmt::Display for ParseError {
         match self {
             ParseError::Help => write!(f, "{USAGE}"),
             ParseError::Version => write!(f, "caffeinate {VERSION}"),
+            ParseError::Update => write!(f, "caffeinate: updating"),
             ParseError::UnknownFlag(s) => write!(f, "caffeinate: unknown option '{s}'"),
             ParseError::MissingValue(c) => write!(f, "caffeinate: option -{c} requires a value"),
             ParseError::BadValue(c, v) => write!(f, "caffeinate: invalid value for -{c}: '{v}'"),
@@ -95,6 +100,7 @@ fn parse_args<I: IntoIterator<Item = String>>(args: I) -> Result<Options, ParseE
             }
             "-h" | "--help" => return Err(ParseError::Help),
             "-V" | "--version" => return Err(ParseError::Version),
+            "--update" => return Err(ParseError::Update),
             s if s.starts_with("--") => return Err(ParseError::UnknownFlag(arg)),
             s if !s.starts_with('-') || s.len() < 2 => {
                 // First non-option token starts the utility command line.
@@ -261,6 +267,27 @@ fn run_command(argv: &[String], timeout: Option<u64>) -> i32 {
     }
 }
 
+/// Re-run the published installer. It verifies the SHA256 and replaces the
+/// running exe safely, so delegating to it keeps one source of truth.
+fn self_update() -> i32 {
+    let status = Command::new("powershell")
+        .args([
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            &format!("irm {INSTALL_URL} | iex"),
+        ])
+        .status();
+    match status {
+        Ok(s) => s.code().unwrap_or(1),
+        Err(e) => {
+            eprintln!("caffeinate: cannot start powershell: {e}");
+            1
+        }
+    }
+}
+
 fn main() {
     let opts = match parse_args(env::args().skip(1)) {
         Ok(o) => o,
@@ -268,6 +295,7 @@ fn main() {
             println!("{e}");
             return;
         }
+        Err(ParseError::Update) => process::exit(self_update()),
         Err(e) => {
             eprintln!("{e}");
             eprintln!("{USAGE}");
@@ -396,6 +424,7 @@ mod tests {
         assert_eq!(p(&["--help"]), Err(ParseError::Help));
         assert_eq!(p(&["-V"]), Err(ParseError::Version));
         assert_eq!(p(&["--version"]), Err(ParseError::Version));
+        assert_eq!(p(&["--update"]), Err(ParseError::Update));
     }
 
     #[test]
